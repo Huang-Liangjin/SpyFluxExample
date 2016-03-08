@@ -5,4 +5,5 @@ package jp.co.drecom.spyfluxexample.actions;
  */
 public interface ActionDataKey {
     int WORDS_TODAY = 0X00001001;
+    int WORD_NEXT = 0X00001002;
 }

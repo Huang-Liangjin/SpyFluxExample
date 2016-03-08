@@ -4,10 +4,45 @@
     android:layout_height="match_parent"
     tools:context="jp.co.drecom.spyfluxexample.ui.WordDetailsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <View
+        android:id="@+id/view_animation"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:background="#00FF00"
+        android:elevation="5dp"
+        android:visibility="invisible"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <!-- TODO: Update blank fragment layout -->
+        <TextView
+            android:id="@+id/txt_word_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hello_blank_fragment" />
+
+        <Button
+            android:id="@+id/btn_mastered"
+            android:text="Got It(^_^)"
+            android:layout_below="@id/txt_word_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/btn_confused"
+            android:text="Not So Clear(X_X)"
+            android:layout_below="@id/btn_mastered"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/btn_forgotten"
+            android:text="Unknown Word(T_T)"
+            android:layout_below="@id/btn_confused"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+
+
 
 </FrameLayout>

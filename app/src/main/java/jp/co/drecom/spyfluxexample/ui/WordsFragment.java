@@ -14,20 +14,28 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
-import jp.co.drecom.spyflux.action.SpyProcessedAction;
+import jp.co.drecom.spyflux.action.SpyAction;
 import jp.co.drecom.spyflux.dispatcher.SpyDispatcher;
 import jp.co.drecom.spyflux.ui.SpyView;
+import jp.co.drecom.spyflux.util.SpyLog;
 import jp.co.drecom.spyfluxexample.R;
 import jp.co.drecom.spyfluxexample.actions.ActionDataKey;
+import jp.co.drecom.spyfluxexample.actions.ActionType;
 import jp.co.drecom.spyfluxexample.model.Word;
-import jp.co.drecom.spyfluxexample.stores.StoreId;
+import jp.co.drecom.spyfluxexample.stores.WordsStore;
 
 /**
  * A fragment representing a list of Items.
  */
-public class WordsFragment extends Fragment implements SpyView{
+public class WordsFragment extends Fragment implements SpyView, View.OnClickListener{
+
+    public static final String TAG = "WordsFragment";
 
     private WordRecyclerViewAdapter mAdapter;
+
+    private RecyclerView mRecyclerView;
+
+    private OnListFragmentInteractionListener mListener;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -41,20 +49,28 @@ public class WordsFragment extends Fragment implements SpyView{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mAdapter = new WordRecyclerViewAdapter();
+        mAdapter = new WordRecyclerViewAdapter(WordsStore.getInstance().getAll(), this);
+
+        SpyLog.printLog(TAG, "onCreate");
+    }
+
+    @Override
+    public void onDestroy() {
+        SpyLog.printLog(TAG, "onDestroy");
+        super.onDestroy();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_word_list, container, false);
-
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.setAdapter(mAdapter);
+            mRecyclerView = (RecyclerView) view;
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+            mRecyclerView.setAdapter(mAdapter);
+
         }
         return view;
     }
@@ -63,22 +79,27 @@ public class WordsFragment extends Fragment implements SpyView{
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        SpyDispatcher.getInstance().register(this);
+        SpyLog.printLog(TAG, "onAttach");
+        mListener = (OnListFragmentInteractionListener) context;
+        SpyDispatcher.register(this);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        SpyDispatcher.getInstance().unregister(this);
+        SpyLog.printLog(TAG, "onDetach");
+        mListener = null;
+        SpyDispatcher.unregister(this);
     }
 
     @Override
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onNotifyChange(SpyProcessedAction action) {
+    public void onReceiveStoreMsg(SpyAction action) {
         //TODO
-        switch (action.getStoreId()) {
-            case StoreId.WORDS_STORE:
-                mAdapter.setData((List<Word>) action.getAction().getData().get(ActionDataKey.WORDS_TODAY));
+        switch (action.getType()) {
+            case ActionType.GET_WORDS_TODAY:
+                SpyLog.printLog(TAG, "UI received the notice from Store");
+                mAdapter.setDatas((List<Word>) action.getData().get(ActionDataKey.WORDS_TODAY));
                 break;
             default:
                 return;
@@ -86,4 +107,25 @@ public class WordsFragment extends Fragment implements SpyView{
 
     }
 
+    /**
+     * WordsFragmentの唯一のclick listener.
+     * WrodsFragmentの全ての画面要素のクリックイベントはここで受け取ります
+     * @param v
+     */
+    @Override
+    public void onClick(View v) {
+        int itemPosition = mRecyclerView.getChildAdapterPosition(v);
+        if (itemPosition == RecyclerView.NO_POSITION) {
+            //RecyclerView以外のViewのクリックイベント
+            return;
+        }
+        mListener.onListFragmentInteraction(itemPosition);
+
+        SpyLog.printLog(TAG, "word No. " + itemPosition + " is clicked");
+    }
+
+    public interface OnListFragmentInteractionListener {
+
+        void onListFragmentInteraction(int serialNumber);
+    }
 }

@@ -6,7 +6,7 @@ package jp.co.drecom.spyfluxexample.actions;
 public interface ActionType {
     //単語向けのAction type
     int GET_WORDS_TODAY =   0X00010001;
-    int GET_WORD =          0X00010002;
+    int SAVE_STUDY_RESULT_AND_GET_NEXT_WORD =     0X00010002;
     int SHOW_WORD =         0X00010003;
     int MASTER_WORD =       0X00010004;
     int FUZZY_WORD =        0X00010005;
