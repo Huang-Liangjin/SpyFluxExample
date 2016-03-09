@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import jp.co.drecom.spyflux.action.SpyAction;
+import jp.co.drecom.spyflux.action.SpyViewAction;
 import jp.co.drecom.spyflux.util.SpyLog;
 import jp.co.drecom.spyfluxexample.R;
 import jp.co.drecom.spyfluxexample.actions.ActionType;
@@ -26,9 +26,9 @@ public class WordsActivity extends AppCompatActivity implements WordsFragment.On
 //        mWordsStore.register();
         setContentView(R.layout.activity_words);
         if (WordsStore.getInstance().isEmpty()) {
-            SpyAction action = new SpyAction.Builder(ActionType.GET_WORDS_TODAY)
+            SpyViewAction action = new SpyViewAction.Builder(ActionType.GET_WORDS_TODAY)
                    .build();
-            mWordsStore.onProcess(action);
+            mWordsStore.onProcessViewRequest(action);
 //            WordsActionCreator.getInstance().getTodayWords();
         }
 

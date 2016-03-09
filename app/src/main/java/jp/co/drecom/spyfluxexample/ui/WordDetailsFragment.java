@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,8 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import jp.co.drecom.spyflux.action.SpyAction;
+import jp.co.drecom.spyflux.action.SpyStoreAction;
+import jp.co.drecom.spyflux.action.SpyViewAction;
 import jp.co.drecom.spyflux.dispatcher.SpyDispatcher;
 import jp.co.drecom.spyflux.ui.SpyView;
 import jp.co.drecom.spyflux.util.SpyLog;
@@ -58,6 +60,7 @@ public class WordDetailsFragment extends Fragment implements SpyView, View.OnCli
 
     private int mWordNum;
 
+    private ViewGroup mContainer;
     private TextView mTextViewWordDetails;
     private Button mBtnMastered;
     private Button mBtnConfused;
@@ -65,6 +68,8 @@ public class WordDetailsFragment extends Fragment implements SpyView, View.OnCli
     private View mAnimationView;
 
     private boolean mBtnClickable = true;
+
+    private int globalHeight;
 
 
     public WordDetailsFragment() {
@@ -95,6 +100,11 @@ public class WordDetailsFragment extends Fragment implements SpyView, View.OnCli
         if (getArguments() != null) {
             mWordNum = getArguments().getInt(ARG_WORD_NUMBER);
         }
+
+        DisplayMetrics dm = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        globalHeight = dm.heightPixels;
+
         SpyLog.printLog(TAG, "onCreate, wordNum is " + mWordNum);
     }
 
@@ -109,6 +119,7 @@ public class WordDetailsFragment extends Fragment implements SpyView, View.OnCli
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_word_details, container, false);
+        mContainer = (ViewGroup) view.findViewById(R.id.container_word_details);
         mTextViewWordDetails = (TextView) view.findViewById(R.id.txt_word_details);
         mBtnMastered = (Button) view.findViewById(R.id.btn_mastered);
         mBtnConfused = (Button) view.findViewById(R.id.btn_confused);
@@ -128,6 +139,7 @@ public class WordDetailsFragment extends Fragment implements SpyView, View.OnCli
         super.onAttach(context);
         SpyDispatcher.register(this);
         SpyLog.printLog(TAG, "onAttach");
+
     }
 
     @Override
@@ -139,7 +151,7 @@ public class WordDetailsFragment extends Fragment implements SpyView, View.OnCli
 
     @Override
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onReceiveStoreMsg(SpyAction action) {
+    public void onReceiveStoreMsg(SpyStoreAction action) {
         switch (action.getType()) {
             case ActionType.SAVE_STUDY_RESULT_AND_GET_NEXT_WORD:
                 Word word = (Word)action.getData().get(ActionDataKey.WORD_NEXT);
@@ -180,10 +192,11 @@ public class WordDetailsFragment extends Fragment implements SpyView, View.OnCli
     }
 
     private void requestProcess(int wordNum, int studyResult) {
-        SpyAction action = new SpyAction.Builder(ActionType.SAVE_STUDY_RESULT_AND_GET_NEXT_WORD)
-                .bundle(wordNum, studyResult)
+        SpyViewAction action = new SpyViewAction.Builder(ActionType.SAVE_STUDY_RESULT_AND_GET_NEXT_WORD)
+                .bundle(wordNum)
+                .bundle(studyResult)
                 .build();
-        WordsStore.getInstance().onProcess(action);
+        WordsStore.getInstance().onProcessViewRequest(action);
     }
 
     private void updateData(int wordNum) {
@@ -198,9 +211,11 @@ public class WordDetailsFragment extends Fragment implements SpyView, View.OnCli
         view.getLocationOnScreen(location);
 
         int x = location[0] + (view.getWidth()/2);
+        int topOffset = globalHeight - mContainer.getMeasuredHeight();
         // minus the action bar height.
         // should calculate it more carefully when developing the app.
-        int y = location[1] - 160;
+        SpyLog.printLog(TAG, "topOffset is " + topOffset);
+        int y = location[1] + view.getHeight()/2 - topOffset;
         AnimationUtil.showRevealEffect(mAnimationView, x, y, mShowListener);
     }
 

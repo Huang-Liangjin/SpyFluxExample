@@ -23,11 +23,6 @@ public class WordRecyclerViewAdapter extends RecyclerView.Adapter<WordRecyclerVi
     private List<Word> mValues;
     private final View.OnClickListener mListener;
 
-//    public WordRecyclerViewAdapter(List<Word> items, OnListFragmentInteractionListener listener) {
-//        mValues = items;
-//        mListener = listener;
-//    }
-
     public WordRecyclerViewAdapter(List<Word> data, View.OnClickListener listener) {
         mValues = data;
         mListener = listener;

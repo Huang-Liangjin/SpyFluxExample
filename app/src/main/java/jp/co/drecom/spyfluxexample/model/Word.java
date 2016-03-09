@@ -2,10 +2,15 @@ package jp.co.drecom.spyfluxexample.model;
 
 /**
  * Created by huang_liangjin on 2016/03/04.
+ * 単語情報
+ *
  */
 public class Word {
+    //把握
     public static final int STUDY_RESULT_MASTERED = 3;
+    //あやふや
     public static final int STUDY_RESULT_CONFUSED = 2;
+    //知らない
     public static final int STUDY_RESULT_FORGOTTEN = 1;
 
     public int id;

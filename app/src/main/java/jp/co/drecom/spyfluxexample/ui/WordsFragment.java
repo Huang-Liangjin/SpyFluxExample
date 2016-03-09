@@ -14,7 +14,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
-import jp.co.drecom.spyflux.action.SpyAction;
+import jp.co.drecom.spyflux.action.SpyStoreAction;
 import jp.co.drecom.spyflux.dispatcher.SpyDispatcher;
 import jp.co.drecom.spyflux.ui.SpyView;
 import jp.co.drecom.spyflux.util.SpyLog;
@@ -94,7 +94,7 @@ public class WordsFragment extends Fragment implements SpyView, View.OnClickList
 
     @Override
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onReceiveStoreMsg(SpyAction action) {
+    public void onReceiveStoreMsg(SpyStoreAction action) {
         //TODO
         switch (action.getType()) {
             case ActionType.GET_WORDS_TODAY:
