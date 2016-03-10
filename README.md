@@ -1,4 +1,5 @@
-## 注意：本サンプルはLolipopしかないのAPIを使ってるので、Lolipop以下の端末はうまく動作しない
+## 注意
+本サンプルはLolipopしかないのAPIを使ってるので、Lolipop以下の端末はうまく動作しない
 
 ## SpyFluxExampleサンプルの説明
 WordsActivityは、WordsFragment（単語リスト画面）とWordDetailsFragment（単語詳細画面）二つの
@@ -56,6 +57,7 @@ Back key押すと、単語リスト画面に戻ります。
  * それらの画面は完全にActivityことに分けるか、Activity-Fragment Structureを使うか
  * 画面のレイアウト・要素などはもっと具体的に
  * etc...
+
 上のこと決まったら、Activity, Fragmentの実装します。（SpyView interfaceはを各Viewで実現することを忘れずに）
 
 ### 2. この業務フローで取り扱うデータの定義
