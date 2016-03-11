@@ -2,7 +2,6 @@ package jp.co.drecom.spyfluxexample.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import jp.co.drecom.spyflux.util.SpyLog;
 import jp.co.drecom.spyfluxexample.model.Word;
@@ -15,7 +14,7 @@ public class DummyDBHelper {
     public static synchronized List<Word> getTodayWords() {
         SpyLog.printLog(TAG, "");
         List<Word> wordList = new ArrayList<Word>();
-        Random random = new Random(System.currentTimeMillis());
+//        Random random = new Random(System.currentTimeMillis());
         for (int i = 0; i < 500; i++) {
             Word word = new Word();
             word.id = i;
